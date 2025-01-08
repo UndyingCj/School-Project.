@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <numeric>
 #include <iomanip>
+#include <cstdlib>
+#include <ctime>
 
 class Student
 {
@@ -19,54 +21,32 @@ public:
     Student(const std::string &firstName, const std::string &lastName)
         : firstName(firstName), lastName(lastName), examScore(0.0), finalGrade(0.0) {}
 
-    // Copy Constructor
-    Student(const Student &other)
-        : firstName(other.firstName), lastName(other.lastName),
-          assignmentScores(other.assignmentScores), examScore(other.examScore),
-          finalGrade(other.finalGrade) {}
-
-    // Assignment Operator
-    Student &operator=(const Student &other)
-    {
-        if (this == &other)
-            return *this; // Self-assignment check
-        firstName = other.firstName;
-        lastName = other.lastName;
-        assignmentScores = other.assignmentScores;
-        examScore = other.examScore;
-        finalGrade = other.finalGrade;
-        return *this;
-    }
-
-    // Destructor
-    ~Student() {}
-
     // Data Input Method
-    friend std::istream &operator>>(std::istream &is, Student &student)
+    void inputScores()
     {
-        int numAssignments;
-        std::cout << "Enter the number of assignments: ";
-        is >> numAssignments;
-        student.assignmentScores.resize(numAssignments);
-
-        for (int i = 0; i < numAssignments; ++i)
+        double score;
+        std::cout << "Enter homework scores for " << firstName << " " << lastName << " (type -1 to finish):\n";
+        while (true)
         {
-            std::cout << "Assignment " << (i + 1) << ": ";
-            is >> student.assignmentScores[i];
+            std::cin >> score;
+            if (score == -1)
+                break;
+            assignmentScores.push_back(score);
         }
 
-        std::cout << "Enter exam score: ";
-        is >> student.examScore;
-        return is;
+        std::cout << "Enter exam score for " << firstName << " " << lastName << ": ";
+        std::cin >> examScore;
     }
 
-    // Data Output Method
-    friend std::ostream &operator<<(std::ostream &os, const Student &student)
+    // Random Score Generation
+    void generateRandomScores(int numAssignments)
     {
-        os << std::setw(10) << student.firstName
-           << std::setw(15) << student.lastName
-           << std::setw(15) << std::fixed << std::setprecision(2) << student.finalGrade;
-        return os;
+        assignmentScores.clear();
+        for (int i = 0; i < numAssignments; ++i)
+        {
+            assignmentScores.push_back((std::rand() % 101) / 1.0); // Random score between 0 and 100
+        }
+        examScore = (std::rand() % 101) / 1.0; // Random score between 0 and 100
     }
 
     // Calculation Method for Final Grade
@@ -93,10 +73,21 @@ public:
         }
         finalGrade = 0.4 * assignmentScore + 0.6 * examScore;
     }
+
+    // Output Method
+    friend std::ostream &operator<<(std::ostream &os, const Student &student)
+    {
+        os << std::setw(10) << student.firstName
+           << std::setw(15) << student.lastName
+           << std::setw(15) << std::fixed << std::setprecision(2) << student.finalGrade;
+        return os;
+    }
 };
 
 int main()
 {
+    std::srand(std::time(nullptr)); // Seed the random number generator
+
     int studentCount;
     std::cout << "Enter the number of students: ";
     std::cin >> studentCount;
@@ -109,15 +100,30 @@ int main()
         std::cin >> firstName >> lastName;
 
         Student student(firstName, lastName);
-        std::cin >> student;
+
+        char inputChoice;
+        std::cout << "Do you want to (M)anually enter scores or (R)andomly generate scores? (M/R): ";
+        std::cin >> inputChoice;
+
+        if (inputChoice == 'M' || inputChoice == 'm')
+        {
+            student.inputScores();
+        }
+        else if (inputChoice == 'R' || inputChoice == 'r')
+        {
+            int numAssignments;
+            std::cout << "Enter the number of assignments to randomly generate: ";
+            std::cin >> numAssignments;
+            student.generateRandomScores(numAssignments);
+        }
 
         students.push_back(student);
     }
 
-    char choice;
+    char calculationChoice;
     std::cout << "Calculate final grade using (A)verage or (M)edian of assignment scores? (A/M): ";
-    std::cin >> choice;
-    bool useAverage = (choice == 'A' || choice == 'a');
+    std::cin >> calculationChoice;
+    bool useAverage = (calculationChoice == 'A' || calculationChoice == 'a');
 
     // Calculate Final Grades for All Students
     for (auto &student : students)
@@ -135,6 +141,11 @@ int main()
     {
         std::cout << student << std::endl;
     }
+
+    // Display the chosen calculation method
+    std::cout << "\nFinal grades were calculated using the "
+              << (useAverage ? "average" : "median")
+              << " of assignment scores.\n";
 
     return 0;
 }
