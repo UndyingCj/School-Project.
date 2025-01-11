@@ -49,6 +49,7 @@ std::ostream &operator<<(std::ostream &os, const Student &student)
 {
     os << std::setw(10) << student.firstName
        << std::setw(15) << student.surname
-       << std::setw(15) << std::fixed << std::setprecision(2) << student.finalGrade;
+       << std::setw(15) << std::fixed 
+       << std::setprecision(2) << student.finalGrade;
     return os;
 }

@@ -78,7 +78,7 @@ void FileManager::writeStudentDataToFile(const std::vector<Student> &students, c
     std::ofstream outFile(filename);
     outFile << std::setw(10) << std::left << "Name" 
         << std::setw(10) << std::left << "Surname"
-        << std::setw(10) << std::left << "FinalGrade\n";
+         << std::left  << std::setprecision(2) << "FinalGrade\n";
 
     for (const auto &student : students)
     {
@@ -91,23 +91,25 @@ void FileManager::splitStudentsByGrade(const std::vector<Student> &students, con
     std::vector<Student> passed, failed;
     Timer timer;
 
-    timer.startTimer(); // Restart timer for splitting phase
+    timer.startTimer(); 
 
     for (const auto &student : students)
     {
-        if (student.getFinalGrade() >= 5.0)
-            passed.push_back(student);
-        else
+       double roundedGrade = std::round(student.getFinalGrade() * 100.0) / 100.0;
+
+        if (roundedGrade < 5.0)      
             failed.push_back(student);
+        else
+            passed.push_back(student);
     }
 
-    double splitTime = timer.stopTimer(); // Stop and get elapsed time
+    double splitTime = timer.stopTimer();
     std::cout << "Splitting students took " << splitTime << " seconds.\n\n";
 
     
     timer.startTimer();
     writeStudentDataToFile(passed, passedFile);
     writeStudentDataToFile(failed, failedFile);
-    double writeTime = timer.stopTimer(); // Stop and get elapsed time
+    double writeTime = timer.stopTimer();
     std::cout << "Writing students to two new files took " << writeTime << " seconds.\n\n";
 }

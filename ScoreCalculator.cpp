@@ -49,8 +49,7 @@ int main()
                 std::cin >> choice;
                 bool useAverage = (choice == 'A' || choice == 'a');
 
-                // Remove the debugging message for entering final grade calculation
-                // std::cout << "Entering final grade calculation...\n";
+                
 
                 // Loop through students and calculate final grade
                 for (auto& student : students)
