@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <deque>
 #include <list>
 #include "Student.h"
 #include "Timer.h"
