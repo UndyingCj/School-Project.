@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <list>
+#include <deque>
 #include "Student.h"
 
 class Sorting
