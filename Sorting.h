@@ -4,6 +4,7 @@
 #include <vector>
 #include <list>
 #include "Student.h"
+#include <deque>
 
 class Sorting
 {
