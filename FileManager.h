@@ -7,6 +7,7 @@
 #include <list>
 #include "Student.h"
 #include "Timer.h"
+#include <deque>
 
 
 class FileManager
